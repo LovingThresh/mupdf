@@ -43,6 +43,37 @@ jobs:
             import subprocess
             import sys
 
+            with open('pip_wrapper.py', 'w') as f:
+            f.write('''
+                import sys
+                import os
+                import subprocess
+
+                original_path = list(sys.path)
+
+                # 临时从路径中移除当前目录
+                if '' in sys.path:
+                    sys.path.remove('')
+                if '.' in sys.path:
+                    sys.path.remove('.')
+
+                # 设置环境变量，使用调整后的路径
+                env = dict(os.environ)
+                if os.name == 'nt':  # Windows使用分号作为路径分隔符
+                    env['PYTHONPATH'] = ';'.join(sys.path)
+                else:  # Unix使用冒号
+                    env['PYTHONPATH'] = ':'.join(sys.path)
+
+                # 使用调整后的环境运行pip install
+                cmd = [sys.executable, '-m', 'pip', 'install', '-vv', '.']
+                print(f"运行命令: {' '.join(cmd)}, 使用调整后的PYTHONPATH")
+                sys.stdout.flush()
+                result = subprocess.run(cmd, env=env, check=False)
+
+                # 使用相同的退出码退出
+                sys.exit(result.returncode)
+            ''')
+
             venv_name = 'pylocal'
 
             command = ''
@@ -52,7 +83,7 @@ jobs:
             else:
                 command += f' && . {venv_name}/bin/activate'
             command += f' && python -m pip install -U pip setuptools'
-            command += f' && python -m pip install -vv .'
+            command += f' && python -m pip_wrapper.py'
             command += f' && python scripts/mupdfwrap.py -d - --test-python'
 
             print(f'Running: {command}')

@@ -52,3 +52,8 @@ platform/win32/Release
 platform/win32/ReleaseOpenssl
 platform/win32/Memento
 platform/win32/x64
+/.vs
+/platforms
+/venv-mupdfwrap-3.10-x64
+/venv-mupdfwrap-3.11-x64
+/pylocal

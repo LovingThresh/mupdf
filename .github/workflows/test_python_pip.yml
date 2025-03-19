@@ -40,6 +40,7 @@ jobs:
 
         run: |
             import os
+            import platform
             import subprocess
             import sys
 
@@ -47,12 +48,12 @@ jobs:
 
             command = ''
             command += f'{sys.executable} -m venv {venv_name}'
-            if os.name == 'nt':
+            if platform.system() == 'Windows':
                 command += f' && ./{venv_name}/Scripts/activate'.replace('/', os.sep)
             else:
                 command += f' && . {venv_name}/bin/activate'
-            command += f' && python -m pip install -U pip setuptools'
-            command += f' && python -m pip_wrapper.py'
+            command += f' && python -m pip install -U pip libclang swig setuptools'
+            command += f' && python scripts/mupdfwrap.py -b all'
             command += f' && python scripts/mupdfwrap.py -d - --test-python'
 
             print(f'Running: {command}')

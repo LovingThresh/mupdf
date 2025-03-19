@@ -1,4 +1,4 @@
-name: Pip build/install and test of Python Bindings
+﻿name: Pip build/install and test of Python Bindings
 
 on:
   schedule:
@@ -19,10 +19,10 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v3
 
       - name: Pip build/install and test of Python Bindings
 
@@ -40,7 +40,6 @@ jobs:
 
         run: |
             import os
-            import platform
             import subprocess
             import sys
 
@@ -48,7 +47,7 @@ jobs:
 
             command = ''
             command += f'{sys.executable} -m venv {venv_name}'
-            if platform.system() == 'Windows':
+            if os.name == 'nt':
                 command += f' && ./{venv_name}/Scripts/activate'.replace('/', os.sep)
             else:
                 command += f' && . {venv_name}/bin/activate'
@@ -63,7 +62,7 @@ jobs:
         shell: python
 
       - name: Archive generated code
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: generated-code

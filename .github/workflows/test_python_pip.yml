@@ -53,7 +53,7 @@ jobs:
             else:
                 command += f' && . {venv_name}/bin/activate'
             command += f' && python -m pip install -U pip libclang swig setuptools'
-            command += f' && python scripts/mupdfwrap.py -b all'
+            command += f' && python setup.py install'
             command += f' && python scripts/mupdfwrap.py -d - --test-python'
 
             print(f'Running: {command}')
